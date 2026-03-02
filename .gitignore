@@ -1,0 +1,48 @@
+# 依赖与虚拟环境
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg
+.eggs/
+*.manifest
+
+# 日志与数据
+logs/
+*.log
+retry_queue/
+
+# 测试与覆盖率
+coverage.xml
+htmlcov/
+.coverage
+
+# 环境与密钥（.env.example 可提交，其余勿提交）
+.env
+.env.*
+!.env.example
+*.pem
+.secrets
+
+# 本地覆盖配置（可选）
+config/config.local.yaml
+
+# 系统与编辑器
+.DS_Store
+*.swp
+*.swo
+*~
+
+# IDE
+.idea/
+.vscode/
+*.code-workspace
+
+# 构建
+dist/
+build/
+*.egg-info/

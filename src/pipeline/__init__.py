@@ -1,0 +1,1 @@
+# TrendRadar AI Pipeline

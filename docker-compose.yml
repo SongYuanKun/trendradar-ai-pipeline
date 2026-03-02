@@ -1,0 +1,22 @@
+# TrendRadar AI Pipeline - 可与 TrendRadar / xiaohongshu-mcp 同网段联调
+# 使用方式：在项目根目录执行 docker compose up -d
+
+services:
+  trendradar-ai-pipeline:
+    build: .
+    container_name: trendradar-ai-pipeline
+    environment:
+      # TrendRadar MCP 地址（同 compose 下用服务名，否则填实际 host:port）
+      - MCP_BASE_URL=${MCP_BASE_URL:-http://127.0.0.1:3333/mcp}
+      # 百炼 API Key（必填，请通过 .env 或 -e 传入，勿写死在仓库）
+      - BAILIAN_API_KEY=${BAILIAN_API_KEY}
+      # xiaohongshu-mcp 接收地址（本地示例默认值，生产请通过 .env 覆盖）
+      - XIAOHONGSHU_MCP_URL=${XIAOHONGSHU_MCP_URL:-http://127.0.0.1:8080/api/ingest}
+    volumes:
+      - ./config:/app/config:ro
+      - ./logs:/app/logs
+      - ./retry_queue:/app/retry_queue
+    # 若与 TrendRadar MCP 同 compose 部署，可取消注释并改 MCP_BASE_URL
+    # depends_on:
+    #   - trendradar-mcp
+    restart: unless-stopped

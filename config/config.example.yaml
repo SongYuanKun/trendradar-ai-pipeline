@@ -1,0 +1,34 @@
+# TrendRadar AI 分析管道 - 配置示例
+# 复制为 config.yaml 并确保敏感项使用 env: 引用，勿提交真实密钥
+# cp config.example.yaml config.yaml
+
+mcp:
+  base_url: "http://127.0.0.1:3333/mcp"
+  tools:
+    get_latest_news:
+      limit: 50
+      include_url: true
+    # 可选: get_trending_topics / get_latest_rss
+
+ai:
+  api_base: "https://dashscope.aliyuncs.com/compatible-mode/v1"
+  model: "qwen3.5-plus"
+  api_key: "env:BAILIAN_API_KEY"
+  timeout: 120
+  max_retries: 3
+  batch_size: 10  # 批量分析时每批条数，0 表示单条模式
+
+downstream:
+  url: "http://127.0.0.1:8080/api/ingest"
+  timeout: 30
+  max_retries: 2
+  # 若 xiaohongshu-mcp 需要认证，可配置
+  # api_key: "env:XIAOHONGSHU_API_KEY"
+
+scheduler:
+  # cron: "0 */2 * * *"   # 每 2 小时
+  interval_seconds: 3600   # 或使用间隔秒数，与 cron 二选一
+
+logging:
+  level: "INFO"
+  path: "logs/pipeline.log"
