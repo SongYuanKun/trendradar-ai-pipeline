@@ -48,6 +48,10 @@ def load_config(config_path: Optional[str] = None) -> Dict[str, Any]:
         data.setdefault("mcp", {})["base_url"] = os.environ["MCP_BASE_URL"]
     if os.environ.get("XIAOHONGSHU_MCP_URL"):
         data.setdefault("downstream", {})["url"] = os.environ["XIAOHONGSHU_MCP_URL"]
+    if os.environ.get("HTTP_PROXY"):
+        data.setdefault("downstream", {})["proxy"] = os.environ["HTTP_PROXY"]
+    elif os.environ.get("HTTPS_PROXY"):
+        data.setdefault("downstream", {})["proxy"] = os.environ["HTTPS_PROXY"]
     if os.environ.get("BAILIAN_API_KEY"):
         data.setdefault("ai", {})["api_key"] = os.environ["BAILIAN_API_KEY"]
     return data
