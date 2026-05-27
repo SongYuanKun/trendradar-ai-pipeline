@@ -182,7 +182,10 @@ def publish_blog_post(
         logger.info("blog.enabled=false，跳过博客输出")
         return None
 
-    tools_repo = Path(blog_cfg.get("repo_path") or "/home/kun/vs_code/dev-tools-nav").expanduser()
+    tools_repo = Path(blog_cfg.get("repo_path") or "").expanduser()
+    if not tools_repo or not str(tools_repo):
+        logger.error("blog.repo_path 未配置，请通过 BLOG_REPO_PATH 环境变量指定 dev-tools-nav 仓库路径")
+        return None
     if not tools_repo.is_dir():
         logger.error("tools repo not found: %s", tools_repo)
         return None

@@ -2,7 +2,7 @@
 # 敏感信息请使用环境变量（如 env:BAILIAN_API_KEY），勿将真实密钥写入本文件或提交到仓库
 
 mcp:
-  base_url: "http://127.0.0.1:3333/mcp"
+  base_url: "http://host.docker.internal:3333/mcp"
   tools:
     get_latest_news:
       limit: 50
@@ -10,23 +10,36 @@ mcp:
     # 可选: get_trending_topics / get_latest_rss
 
 ai:
-  api_base: "https://dashscope.aliyuncs.com/compatible-mode/v1"
-  model: "qwen3.5-plus"
-  api_key: "env:BAILIAN_API_KEY"
+  enabled: "env:AI_ANALYSIS_ENABLED"   # true/false，默认 true
+  api_base: "env:AI_API_BASE"          # 如 https://dashscope.aliyuncs.com/compatible-mode/v1
+  model: "env:AI_MODEL"                # LiteLLM 格式: dashscope/qwen3.5-plus
+  api_key: "env:AI_API_KEY"
   timeout: 120
   max_retries: 3
-  batch_size: 10  # 批量分析时每批条数，0 表示单条模式
+  batch_size: 0  # 批量分析时每批条数，0 表示单条模式
 
 downstream:
-  url: "http://127.0.0.1:8080/api/ingest"
-  timeout: 30
+  enabled: false  # 纯测试默认不发布；确认上线后再改 true
+  url: "http://host.docker.internal:18060/mcp"
+  timeout: 300
   max_retries: 2
-  # 若 xiaohongshu-mcp 需要认证，可配置（环境变量不要提交到仓库）
-  # api_key: "env:XIAOHONGSHU_API_KEY"
+  api_token: "env:XIAOHONGSHU_API_TOKEN"  # xiaohongshu-mcp 认证 token
+
+blog:
+  enabled: "env:BLOG_OUTPUT_ENABLED"   # true/false，默认 false；通过环境变量开启
+  repo_path: "env:BLOG_REPO_PATH"       # 本地 dev-tools-nav 仓库路径
+  commit: true
+  push: "env:BLOG_OUTPUT_PUSH"         # true/false，确认无误后可开启
 
 scheduler:
-  # cron: "0 */2 * * *"   # 每 2 小时
-  interval_seconds: 3600   # 或使用间隔秒数，与 cron 二选一
+  # 每周一三五 09:00-12:00 之间随机执行（目标：每周 3 篇博客、1 篇小红书）
+  run_on_startup: false  # 防止容器重启时误触发发布
+  cron: "0 9 * * 1,3,5"
+  # 其他可选方式（与 cron 三选一）：
+  # daily_random:
+  #   window_start: "09:00"
+  #   window_end: "12:00"
+  # interval_seconds: 604800
 
 logging:
   level: "INFO"
