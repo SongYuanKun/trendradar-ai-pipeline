@@ -52,6 +52,22 @@ def load_config(config_path: Optional[str] = None) -> Dict[str, Any]:
         data.setdefault("downstream", {})["proxy"] = os.environ["HTTP_PROXY"]
     elif os.environ.get("HTTPS_PROXY"):
         data.setdefault("downstream", {})["proxy"] = os.environ["HTTPS_PROXY"]
-    if os.environ.get("BAILIAN_API_KEY"):
+    # 新格式环境变量（优先级高于 yaml 中 env: 占位）
+    if os.environ.get("AI_API_KEY"):
+        data.setdefault("ai", {})["api_key"] = os.environ["AI_API_KEY"]
+    if os.environ.get("AI_MODEL"):
+        data.setdefault("ai", {})["model"] = os.environ["AI_MODEL"]
+    if os.environ.get("AI_API_BASE"):
+        data.setdefault("ai", {})["api_base"] = os.environ["AI_API_BASE"]
+    if os.environ.get("AI_ANALYSIS_ENABLED"):
+        data.setdefault("ai", {})["enabled"] = os.environ["AI_ANALYSIS_ENABLED"].lower() != "false"
+    if os.environ.get("BLOG_OUTPUT_ENABLED"):
+        data.setdefault("blog", {})["enabled"] = os.environ["BLOG_OUTPUT_ENABLED"].lower() == "true"
+    if os.environ.get("BLOG_OUTPUT_PUSH"):
+        data.setdefault("blog", {})["push"] = os.environ["BLOG_OUTPUT_PUSH"].lower() == "true"
+    if os.environ.get("BLOG_OUTPUT_REPO_PATH"):
+        data.setdefault("blog", {})["repo_path"] = os.environ["BLOG_OUTPUT_REPO_PATH"]
+    # 旧版兼容
+    if os.environ.get("BAILIAN_API_KEY") and not os.environ.get("AI_API_KEY"):
         data.setdefault("ai", {})["api_key"] = os.environ["BAILIAN_API_KEY"]
     return data
